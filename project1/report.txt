@@ -1,0 +1,41 @@
+# Step 5 Tested Inputs
+
+## Error Case 1
+How many registered voters were surveyed? 10 
+How many of them say they will vote for Joe? 5
+How many of them say they will vote for Donald? 7
+
+50.0% say they will vote for Joe.
+70.0% say they will vote for Donald.
+Donald is predicted to win the election.
+
+A sum of Joe + Donald votes larger than the number of voters simply results in a total percentage > 100%, a nonsensical result.
+
+## Error Case 2
+How many registered voters were surveyed? -10
+How many of them say they will vote for Joe? 5
+How many of them say they will vote for Donald? 5
+
+-50.0% say they will vote for Joe.
+-50.0% say they will vote for Donald.
+Donald is predicted to win the election.
+
+Negative inputs result in negative percentages, which are nonsensical.
+
+# Logic Errors Introduced
+ln 20 and 21 have the percentage formula flipped. This causes both order of operations to resolve incorrectly by dividing by 100, and is also the incorrect formula for a percentage. 
+
+ex)
+How many registered voters were surveyed? 10
+How many of them say they will vote for Joe? 5
+How many of them say they will vote for Donald? 5
+
+0.5% say they will vote for Joe.
+0.5% say they will vote for Donald.
+Donald is predicted to win the election.
+
+As can be seen, the "0.5%" results from (5 / 100.0)
+
+# Compile Errors Introduced
+ln 13: semicolon missing at end of line
+ln 23: no namespace provided for ios::fixed constant, so unresolved + function parameter type mismatch
