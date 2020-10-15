@@ -49,7 +49,7 @@ int main() {
       duty += special_percent * (cheese_value - 1000.0);
     } else {
       // remaining price is at 2.9%
-      duty += special_percent * 13000.0 + 0.029 * (cheese_value * 13000.0);
+      duty += special_percent * 12000.0 + 0.029 * (cheese_value - 13000.0);
     }
   }
   cout << "The import duty for " << importer << " is $" << duty << endl;
