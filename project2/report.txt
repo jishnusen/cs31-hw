@@ -1,0 +1,90 @@
+a) Some setbacks during the development process were as follows:
+ * I had trouble with using `cin.ignore` and `getline` when taking in strings 
+   from the user. 
+ * I had some mathematical logic errors in getting the tariff rates to come out
+   correctly. In this case I was applying the rates to the whole price, rather
+   than after the base value of the tariff. ie. 2.9% on the whole price if above
+   13000 rather than just (price - 13000).
+
+b) Test cases:
+# Test each error case for appearing first
+1.
+Cheese type:
+Value: 0
+Importer:
+---
+You must enter a cheese type
+
+2.
+Cheese type: testcheese
+Value: 0
+Importer:
+---
+The value must be positive
+
+3.
+Cheese type: testcheese
+Value: 1
+Importer:
+---
+You must enter an importer
+
+# Test values at the start of each bracket
+1.
+Cheese type: testcheese
+Value: 1000
+Importer: testimporter
+---
+The import duty for testimporter is $11.00
+
+2.
+Cheese type: testcheese
+Value: 13000
+Importer: testimporter
+---
+The import duty for testimporter is $251.00
+
+# Test values in between brackets
+1.
+Cheese type: testcheese
+Value: 500
+Importer: testimporter
+---
+The import duty for testimporter is $5.50
+
+2.
+Cheese type: testcheese
+Value: 1500
+Importer: testimporter
+---
+The import duty for testimporter is $21.00
+
+3.
+Cheese type: testcheese
+Value: 13500
+Importer: testimporter
+---
+The import duty for testimporter is $265.50
+
+# Test cheshire and stilton with high value to include all brackets
+1.
+Cheese type: cheshire
+Value: 14000
+Importer: testimporter
+---
+The import duty for testimporter is $208.00
+
+2.
+Cheese type: stilton
+Value: 14000
+Importer: testimporter
+---
+The import duty for testimporter is $208.00
+
+# Test importer name with spaces
+Cheese type: stilton
+Value: 14000
+Importer: test importer
+---
+The import duty for test importer is $208.00
+

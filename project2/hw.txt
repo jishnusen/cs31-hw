@@ -1,0 +1,70 @@
+# Part 1
+--------
+
+string grendel = "endl"; // Saves string containing chars "endl"
+cout << "endl"; // Prints "endl"
+cout << grendel; // Prints "endl"
+cout << endl; // Prints newline
+cout << "grendel"; // Prints endl
+
+**Output**
+endl
+endl
+
+endl
+**End of Output**
+
+Lines with ** are not part of output, they simply signify where output begins
+and ends.
+
+
+# Part 2
+--------
+
+It draws a triangle with base and height with given side numbers, filled with
+the `#` character
+
+# Part 3
+--------
+
+#include <iostream>
+using namespace std;
+
+int main() {
+  int side;
+
+  cout << "Enter a number: ";
+  cin >> side;
+
+  for (int i = 0; i < side; i++) {
+    int j = i;
+    while (j >= 0) {
+      cout << "#";
+      j--;
+    }
+    cout << "\n";
+  }
+}
+
+# Part 4
+--------
+
+switch (codeSection) {
+  case 281:
+    cout << "bigamy";
+    break;
+  case 321:
+  case 322:
+    cout << "selling illegal lottery tickets";
+    break;
+  case 383:
+    cout << "selling rancid butter";
+    break;
+  case 598:
+    cout << "injuring a bird in a public cemetery";
+    break;
+  default:
+    cout << "some other crime";
+    break;
+}
+

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ int main() {
   if (cheese_type.length() == 0) {
     cout << "You must enter a cheese type" << endl;
     return 0;
-  } else if (cheese_value < 0.0) {
+  } else if (cheese_value <= 0.0) {
     cout << "The value must be positive" << endl;
     return 0;
   } else if (importer.length() == 0) {
