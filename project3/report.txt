@@ -1,0 +1,97 @@
+# a. Obstacles overcome
+The major obstacle I faced during writing the code for this project was
+devising the best way to split the vote by state. I solved this issue
+by splitting the string based on there being a number at the start of every
+state string, and a letter at the end of each. Thus, I split it along the 
+transition between number and letter.
+
+# b. Pseudocode design
+`bool isSyntacticallyCorrect(string pollData)`:
+repeatedly for each character of pollData:
+    capitalize if letter
+    if this character is number and the previous was letter
+        we are at the start of the next state code
+        extract previous state code via current index and the last time this happened
+        if not at least 4 characters, return false
+        get party code from last character
+        if party code not letter return false
+        get state code from the two characters before last
+        use isValidUppercaseStateCode to check state code, if false return false
+        if more than two characters before state code return false
+        if characters before state code arent digits return false
+        store the index to mark the beginning of the next state string
+    endif
+end repeatedly
+return true // we got this far, syntax is correct
+
+`int tallyVotes(string pollData, char party, int &voteTally)`
+check syntax, if bad return 1
+check if party code is letter, if not return 2
+capitalize party code
+repeatedly for each character of pollData
+    capitalize if letter
+    if this character is number and the previous was letter
+        we are at the start of the next state code
+        extract previous state code via current index and the last time this happened
+        extract party code from last character
+        extract count from digits before last 3 characters
+        if count is 0 for any state, return 3 and restore old tally
+        if party codes match, increment tally by count extracted
+    endif
+endrepeat
+return 0 // no errors so far
+
+# c. Test Data Used
+--
+`isSyntacticallyCorrect("22CAD1NYr10PAD")`
+expected: true
+
+tests both two digits and one digits vote counts, random casing, and multiple parties/states
+--
+`isSyntacticallyCorrect("38MXR55CAD")`
+expected: false
+
+tests bad state code
+--
+`isSyntacticallyCorrect("38TXR55CAD")`
+expected: true
+
+tests only two digit counts, all caps, and multiple parties/states
+--
+`isSyntacticallyCorrect("222CAD1NYr10PAD")`
+expected: false
+
+tests extra digits at start
+--
+`isSyntacticallyCorrect("22CAD1NYr101PAD")`
+expected: false
+
+tests extra digits in the middle
+--
+`isSyntacticallyCorrect("aCAD1NYr10PAD")`
+expected: false
+
+tests no digits at start
+--
+`!isSyntacticallyCorrect("5ccad")`
+expected: false
+
+tests extra letters at end
+--
+`tallyVotes("38TXR55CAD6Msr29nYd06UTL", 'd', votes)`
+expected: return 0, votes == 84
+
+tests long string, multiple parties/states
+--
+`tallyVotes("38TXR55CAD", '%', votes)`
+expected: return 2, votes == initial value
+
+tests bad party code
+--
+`tallyVotes("0TXR55CAD", 'd', votes)`
+
+tests zero count state
+--
+`tallyVotes("5cad", 'd', votes)`
+tests one state
+--
