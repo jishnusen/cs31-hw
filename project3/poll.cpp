@@ -55,9 +55,11 @@ bool isSyntacticallyCorrect(string pollData) {
         if (!isValidUppercaseStateCode(state_code)) {
           return false;
         }
+        // check count length
         if (state_code_idx > 2) {
           return false;
         }
+        // pull count and check numeric
         string vote_count = poll_str.substr(0, state_code_idx);
         if (!isdigit(poll_str.at(0)) ||
             !isdigit(poll_str.at(state_code_idx - 1))) {
