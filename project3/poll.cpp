@@ -72,6 +72,13 @@ bool isSyntacticallyCorrect(string pollData) {
   return true;
 }
 
+int countToInt(string sub) {
+  if (sub.size() > 1) {
+    return (sub.at(0) - '0') * 10 + (sub.at(1) - '0');
+  }
+  return sub.at(0) - '0';
+}
+
 int tallyVotes(string pollData, char party, int &voteTally) {
   int idx = 0;
   // check syntax
@@ -111,7 +118,7 @@ int tallyVotes(string pollData, char party, int &voteTally) {
         string vote_count = poll_str.substr(0, state_code_idx);
 
         // read vote count from string
-        int cnt = stoi(vote_count);
+        int cnt = countToInt(vote_count);
         if (cnt == 0) {
           voteTally = oldCnt;
           return 3;
