@@ -7,6 +7,7 @@ transition between number and letter.
 
 # b. Pseudocode design
 `bool isSyntacticallyCorrect(string pollData)`:
+if too short return to avoid out of bounds
 repeatedly for each character of pollData:
     capitalize if letter
     if this character is number and the previous was letter
@@ -42,6 +43,12 @@ endrepeat
 return 0 // no errors so far
 
 # c. Test Data Used
+--
+`isSyntacticallyCorrect("")`
+expected: false
+
+tests zero length string
+--
 --
 `isSyntacticallyCorrect("22CAD1NYr10PAD")`
 expected: true

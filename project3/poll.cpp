@@ -24,6 +24,10 @@ bool isValidUppercaseStateCode(string stateCode) // from class website
 
 bool isSyntacticallyCorrect(string pollData) {
   int idx = 0;
+  // must be at least 4 chars for one-digit number, state code, and party letter
+  if (pollData.size() < 4) {
+    return false;
+  }
   for (size_t i = 0; i < pollData.size(); i++) {
     // capitalize everything for convenience
     pollData.at(i) = toupper(pollData.at(i));
@@ -143,6 +147,7 @@ int main() { // from clas website
   assert(!isSyntacticallyCorrect("22CAD1NYr101PAD"));
   assert(!isSyntacticallyCorrect("aCAD1NYr10PAD"));
   assert(!isSyntacticallyCorrect("5ccad"));
+  assert(!isSyntacticallyCorrect(""));
 
   int votes;
   votes = -999;
