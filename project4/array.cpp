@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -75,21 +76,17 @@ int countRuns(const string a[], int n) {
 }
 
 int flip(string a[], int n) {
-  string b[n];
-  for (int i = 0; i < n; i++) {
-    b[i] = a[i];
-  }
-  for (int i = 0; i < n; i++) {
-    a[i] = b[n - 1 - i];
+  for (int i = 0; i < (n / 2); i++) {
+    string tmp = a[i];
+    a[i] = a[n - i - 1];
+    a[n - i - 1] = tmp;
   }
   return n;
 }
 
 int differ(const string a1[], int n1, const string a2[], int n2) {
-  cout << "called" << endl;
   int n = max(n1, n2);
   for (int i = 0; i < n; i++) {
-    cout << a1[i] << " " << a2[i] << endl;
     if (i > min(n1, n2)) {
       return i;
     }
@@ -108,27 +105,27 @@ int main() {
   assert(positionOfMax(h, 7) == 3);
 
   string g[4] = { "martha", "mark", "lindsey", "sara" };
-  /* assert(differ(h, 4, g, 4) == 2); */
+  assert(differ(h, 4, g, 4) == 2);
   assert(appendToAll(g, 4, "?") == 4 && g[0] == "martha?" && g[3] == "sara?");
   assert(rotateLeft(g, 4, 1) == 1 && g[1] == "lindsey?" && g[3] == "mark?");
 
 
-  string politician[5] = { "kamala", "jamie", "lindsey", "sara", "mark" };
-  string res[5] = {"kamala", "lindsey", "sara", "mark", "jamie"};
-  assert(rotateLeft(politician, 5, 1) == 1);
+  /* string politician[5] = { "kamala", "jamie", "lindsey", "sara", "mark" }; */
+  /* string res[5] = {"kamala", "lindsey", "sara", "mark", "jamie"}; */
+  /* assert(rotateLeft(politician, 5, 1) == 1); */
 
-  string d[5] = { "mark", "mark", "mark", "susan", "susan" };
-  assert(countRuns(d, 5) == 2);
+  /* string d[5] = { "mark", "mark", "mark", "susan", "susan" }; */
+  /* assert(countRuns(d, 5) == 2); */
 
   string f[3] = { "lindsey", "joe", "mike" };
   /* assert(lookupAny(h, 7, f, 3) == 2); */
   assert(flip(f, 3) == 3 && f[0] == "mike" && f[2] == "lindsey");
 
   string folks[6] = { "donald", "mike", "", "susan", "sara", "jamie" };
-  string folks2[6] = { "donald", "mike", "", "susan", "sara", "jamie" };
-  /* cout << "got this far" << endl; */
-  /* assert(differ(folks, 6, d, 5) == 2); */
-  /* assert(differ(folks, 2, group, 1) == 1); */
+  string group[5] = { "donald", "mike", "jamie", "", "susan" };
+
+  assert(differ(folks, 6, group, 5) == 2);
+  assert(differ(folks, 2, group, 1) == 1);
   
   cout << "All tests passed" << endl;
 }
