@@ -11,7 +11,7 @@ const int MAX_WORD_LENGTH = 20;
 // Helper function to make string lower case
 void makeLower(char s[]) {
   int i = 0;
-  while (s[i] != '\0') { // make lower case until we see end of string
+  while (s[i]) { // make lower case until we see end of string
     s[i] = tolower(s[i]);
     i++;
   }
@@ -20,7 +20,7 @@ void makeLower(char s[]) {
 // Helper function to check if any non letter chars in string
 bool nonLetter(char s[]) {
   int i = 0;
-  while (s[i] != '\0') { // check for nonletters until end of string
+  while (s[i]) { // check for nonletters until end of string
     if (isalpha(s[i]) == 0) {
       return true;
     }
@@ -65,16 +65,18 @@ void clearRow(char a[], char b[]) {
 int pushEmpty(char wordin[][MAX_WORD_LENGTH + 1],
               char wordout[][MAX_WORD_LENGTH + 1], int nRules) {
   int j = 0; // stores last non-empty word
-  for (int i = 0; i < nRules; i++) {
+  for (int i = 0; i < nRules && j < nRules; i++) {
     if (strcmp(wordin[i], "") != 0) { // if a word isn't empty, swap it with j
-      char tmpin[MAX_WORD_LENGTH + 1];
-      strcpy(tmpin, wordin[i]);
-      strcpy(wordin[i], wordin[j]);
-      strcpy(wordin[j], tmpin);
-      char tmpout[MAX_WORD_LENGTH + 1];
-      strcpy(tmpout, wordout[i]);
-      strcpy(wordout[i], wordout[j]);
-      strcpy(wordout[j], tmpout);
+      if (i != j) {
+        char tmpin[MAX_WORD_LENGTH + 1];
+        strcpy(tmpin, wordin[i]);
+        strcpy(wordin[i], wordin[j]);
+        strcpy(wordin[j], tmpin);
+        char tmpout[MAX_WORD_LENGTH + 1];
+        strcpy(tmpout, wordout[i]);
+        strcpy(wordout[i], wordout[j]);
+        strcpy(wordout[j], tmpout);
+      }
       j++; // after the word is swapped, increment j so that it isn't
            // overwritten
     }
