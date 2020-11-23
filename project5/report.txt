@@ -1,0 +1,56 @@
+# Obstacles Overcome
+The main challenge I had with this project was devising a way to split the words
+up during determine score. I ended up writing a substring function to pull and
+check words after determining their start/end indices.
+
+# Test cases
+cleanUpRules()
+---
+1. Test single rule with random casing in word_in and no word_out and ensure
+normalized to lower case
+2. Repeat case 1 with word_out random casing as well, and ensure both are
+normalized to lower case
+
+3. Test single rule with no word_in and word_out containing any string and
+ensure the rule is "removed"
+
+4. Test single rule with nonalpha symbols in word_in and no word_out and ensure
+removed
+5. Repeat case 4 with nonalpha symbol in word_out and ensure removed
+
+6. Test single rule with equivalent word_in and word_out and ensure removed
+
+7. Test with new rule array that contains all rules above, as well as some clean
+1 word and 2 word rules and ensure it behaves normally
+
+8. Test with one rule having same word_out as word_in of another rule, make sure
+its left alone
+
+9. Test with nRules < 0 and nRules == 0 and ensure that function returns 0 as
+expected and leaves array untouched
+
+===
+
+determineScore()
+---
+All tests conducted with rules from test case no. 9 from cleanUpRules test, as
+they include both one word and two word rules.
+
+1. Test regular sentence that has matches for all two word rules.
+
+2. Test regular sentence that has matches for all one word rules.
+
+3. Test regular sentence that has matches for some one word, and some two word
+rules.
+
+4. Test empty string.
+
+5. Test sentence with random symbols within words.
+
+6. Test sentence with random casing.
+
+7. Test sentence with length == 250.
+
+8. Test sentence with all words longer than rule length.
+
+

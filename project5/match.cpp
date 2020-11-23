@@ -214,14 +214,18 @@ int main() {
   };
 
   assert(cleanUpRules(test0win, test0wout, TEST0_NRULES) == 6);
-  /* printRules(test0win, test0wout, TEST0_NRULES); */
+  /* printRules(test0win, test0wout, */
+  /*            TEST0_NRULES); // print them for an easy visual check */
+  assert(cleanUpRules(test0win, test0wout, 0) == 0);
 
   const int TEST2_NRULES = 2;
   char test2win[TEST2_NRULES][MAX_WORD_LENGTH + 1] = {
-      "confusion", "",
+      "confusion",
+      "",
   };
   char test2wout[TEST2_NRULES][MAX_WORD_LENGTH + 1] = {
-      "confusion", "confusion",
+      "confusion",
+      "confusion",
   };
   assert(cleanUpRules(test2win, test2wout, TEST2_NRULES) == 0);
 
@@ -239,6 +243,10 @@ int main() {
   assert(determineScore("Happy families are all alike; every unhappy family is "
                         "unhappy in its own way.",
                         test1win, test1wout, TEST1_NRULES) == 2);
+  assert(
+      determineScore("Happy  families are all alike; every unhappy family   is "
+                     "unhappy in its own way.",
+                     test1win, test1wout, TEST1_NRULES) == 2);
   assert(determineScore("Happy horses are all alike; every unhappy horse is "
                         "unhappy in its own way.",
                         test1win, test1wout, TEST1_NRULES - 1) == 0);
