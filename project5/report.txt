@@ -3,6 +3,76 @@ The main challenge I had with this project was devising a way to split the words
 up during determine score. I ended up writing a substring function to pull and
 check words after determining their start/end indices.
 
+# Pseudocode Structure
+
+makeLower():
+    for each character in string
+        tolower(character)
+
+nonLetter():
+    for each character in string
+        if not alpha
+            return true
+
+lookup():
+    for each rule
+        if there is a single-word rule with same word_in
+            return that rules index
+        if there is another rule with same word_in and word_out
+            store its index
+
+    no single-word duplicate, so return double word index if found
+
+pushEmpty():
+    for each rule
+        if word_in is not empty
+            swap with the last empty word_in we saw
+
+    return number of non empty word_in swaps we made
+
+cleanUpRules():
+    if nRules is negative, cap it to zero
+    for each rule pair
+        make both word_in and word_out lowercase
+        if word_in is same as word_out 
+            replace with empty string
+        if word_in or word_out contains nonleter chars
+            replace with empty string
+        if duplicate rules (single-word with same word_in or full duplicate)
+            replace with empty string
+
+    push all empty string rules to the end of the rules array
+    return array len - empty string rules
+
+determineScore():
+    if nRules is negative, cap it to zero
+    make empty cstring "doccpy" with max possible document length
+    for each character in document
+        if alpha or space
+            store in doccpy
+    null terminate doccpy // Now we have doccpy with only alpha and space chars
+
+    make doccpy lowercase
+    match counter = 0
+
+    for each rule
+        if single word rule
+            if we are at the end of a word
+                if this last word matches rule
+                    increment match counter
+                    go to next rule
+        if two word rule
+            if we are at the end of a word
+                if this last word matches word_in
+                    store that word_in match in boolean
+                if this last word matches word_out
+                    go to next rule, this one failed
+            if we lasted this long, and word_in matched
+                increment match counter
+                go to next rule
+
+    return match counter
+
 # Test cases
 cleanUpRules()
 ---
@@ -52,5 +122,7 @@ rules.
 7. Test sentence with length == 250.
 
 8. Test sentence with all words longer than rule length.
+
+9. Test with nRules == 0; nRules < 0
 
 
