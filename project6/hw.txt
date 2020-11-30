@@ -1,0 +1,197 @@
+1.
+    a. 
+        int main() {
+          int arr[3] = {5, 10, 15};
+          int *ptr = arr;
+
+          *ptr = 30;       // set arr[0] to 30
+          *(ptr + 1) = 20; // set arr[1] to 20
+          ptr += 2;
+          ptr[0] = 10; // set arr[2] to 10
+
+          ptr -= 2;
+
+          while (ptr <= arr + 2) {
+            cout << *ptr << endl; // print values
+            ptr++;
+          }
+        }
+
+    b.
+        void findMax(int *arr, int n, int *&pToMax) {
+          if (n <= 0)
+            return; // no items, no maximum!
+
+          pToMax = arr;
+
+          for (int i = 1; i < n; i++) {
+            if (arr[i] > *pToMax) {
+              pToMax = arr + i;
+            }
+          }
+        }
+        
+        This function was fixed by adjusting the parameter pToMax to be a
+        reference to a pointer. The reason this is necessary is because the main
+        function is interested in the pointer itself, not just the value the
+        pointer modifies. Furthermore, the pointer passed in is uninitialized.
+
+    c. 
+        int main() {
+          int ptr;
+          computeCube(5, &ptr);
+          cout << "Five cubed is " << ptr << endl;
+        }
+
+        This main routine had to be modified to supply the function with a
+        pointer that points to an initialized variable. Without an initialized
+        pointer, the computeCube function has undefined behavior when it
+        attempts to dereference the pointer parameter.
+
+    d.
+        bool strequal(const char str1[], const char str2[]) {
+          while (*str1 && *str2) {
+            if (*str1 != *str2) // compare corresponding characters
+              return false;
+            str1++; // advance to the next character
+            str2++;
+          }
+          return !*str1 && !*str2; // both ended at same time?
+        }
+
+        The first issue with the function was that in the while loop
+        condition and the if statement, it did not dereference the str1 and 
+        str2 pointers.
+
+        The final issue with this function, is the check for ending at the same
+        time. This also did not dereference the pointer. I also modified the
+        statement to check that both the cstrings are at a terminating char, 
+        which makes it easier to read.
+
+    e.
+        The program, in the function getPtrToArray, is returning a pointer to
+        the function stack which goes out of scope once the function is done
+        being called. The nochange function veils the warning, and the f
+        function ensures undefined behavior by messing with the function stack
+        memory.
+
+2.
+    a. double* cat;
+    b. double mouse[5];
+    c. cat = mouse + 4;
+    d. *cat = 25;
+    e. *(mouse + 3) = 54;
+    f. cat -= 3;
+    g. cat[1] = 42;
+    h. cat[0] = 27;
+    i. bool b = *cat == *(cat + 1);
+    j. bool d = cat == mouse;
+
+3.
+    a.
+        double mean(const double *scores, int numScores) {
+          int i = 0;
+          double tot = 0;
+          while (i < numScores) {
+            tot += *(scores + i);
+            i++;
+          }
+          return tot / numScores;
+        }
+
+    b.
+        const char *findTheChar(const char *str, char chr) {
+          for (int k = 0; str + k; k++)
+            if (*(str + k) == chr)
+              return str + k;
+
+          return nullptr;
+        }
+
+    c.
+        const char *findTheChar(const char *str, char chr) {
+          while (*str) {
+            if (*str == chr) {
+              return str;
+            }
+            str++;
+          }
+
+          return nullptr;
+        }
+
+4.
+    #include <iostream>
+    using namespace std;
+
+    // This function returns the greater of the two integers pointed to
+    int *maxwell(int *a, int *b) {
+      if (*a > *b)
+        return a;
+      else
+        return b;
+    }
+
+    // This function switches the variable that the pointers point to
+    void swap1(int *a, int *b) {
+      int *temp = a;
+      a = b;
+      b = temp;
+    }
+
+    // This function switches the values of the variables that the pointers
+    // point to
+    void swap2(int *a, int *b) {
+      int temp = *a;
+      *a = *b;
+      *b = temp;
+    }
+
+    int main() {
+      // Declare the array
+      int array[6] = {5, 3, 4, 17, 22, 19};
+
+      // Set ptr to point to element 0 as it is bigger than element 2
+      int *ptr = maxwell(array, &array[2]);
+      // Modify element 0 to be -1, now
+      // array = { -1, 3, 4, 17, 22, 19 };
+      *ptr = -1;
+      // Move ptr to element 2
+      ptr += 2;
+      // Modify element 3 to be 9, now
+      // array = { -1, 3, 4, 9, 22, 19 };
+      ptr[1] = 9;
+      // Modify element 1 to be 79, now
+      // array = { -1, 79, 4, 9, 22, 19 };
+      *(array + 1) = 79;
+
+      // Print the index difference between 5 and ptr
+      // ptr is at element 2, so this prints 3
+      cout << &array[5] - ptr << endl;
+
+      // Make array[0] point to array[1] and vice versa
+      // array = { -1, 79, 4, 9, 22, 19 };
+      swap1(&array[0], &array[1]);
+      // This swaps the value of array[1] and array[3]
+      // array = { 4, 79, -1, 9, 22, 19 };
+      swap2(array, &array[2]);
+
+      for (int i = 0; i < 6; i++)
+        // print each element of:
+        // array = { 4, 79, -1, 9, 22, 19 };
+        cout << array[i] << endl;
+    }
+
+5.
+    void removeS(char *s) {
+      char *src = s;
+      while (*src) {
+        *s = *src;
+        if (*s != 'S' && *s != 's') {
+          s++;
+        }
+        src++;
+      }
+      *s = '\0';
+    }
+
