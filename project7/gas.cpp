@@ -1,4 +1,5 @@
 // gas.cpp
+
 // Portions you are to complete are marked with a TODO: comment.
 // We've provided some incorrect return statements (so indicated) just
 // to allow this skeleton program to compile and run, albeit incorrectly.
@@ -162,8 +163,9 @@ void Flatulan::move() {
   int dir = randInt(0, NUMDIRS - 1); // dir is now UP, DOWN, LEFT, or RIGHT
   int r = m_row;
   int c = m_col;
-  m_city->determineNewPosition(r, c, dir);
-  if (!m_city->isPlayerAt(r, c)) {
+  m_city->determineNewPosition(r, c,
+                               dir); // First cap direction based on map bounds
+  if (!m_city->isPlayerAt(r, c)) {   // Only move if player not in location
     m_row = r;
     m_col = c;
   }
@@ -172,10 +174,7 @@ void Flatulan::move() {
 bool Flatulan::possiblyGetConverted() // return true if converted
 {
   // Be converted with 2/3 probability
-  // cou
-  int i = randInt(1, 3) < 3;
-  cout << i << endl;
-  return i;
+  return (randInt(1, 3) < 3); // 1,2 out of 1,2,3
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -215,10 +214,10 @@ void Player::preach() {
 
 void Player::move(int dir) {
   m_age++;
+  m_age++;
   int r = m_row;
   int c = m_col;
   m_city->determineNewPosition(r, c, dir);
-  cout << m_city->nFlatulansAt(r, c) << endl;
   if (m_city->nFlatulansAt(r, c) == 0) {
     m_row = r;
     m_col = c;
@@ -245,7 +244,7 @@ City::City(int nRows, int nCols) {
 
 City::~City() {
   delete m_player;
-  for (int i = 0; i < MAXFLATULANS; i++) {
+  for (int i = 0; i < m_nFlatulans; i++) {
     delete m_flatulans[i];
   }
 }
@@ -257,7 +256,7 @@ int City::cols() const { return m_cols; }
 Player *City::player() const { return m_player; }
 
 bool City::isPlayerAt(int r, int c) const {
-  return m_player->row() == r && m_player->col() == c;
+  return ((m_player->row() == r) && (m_player->col() == c));
 }
 
 int City::flatulanCount() const { return m_nFlatulans; }
@@ -266,7 +265,6 @@ int City::nFlatulansAt(int r, int c) const {
   int ret = 0;
   for (int i = 0; i < m_nFlatulans; i++) {
     if ((m_flatulans[i]->row() == r) && (m_flatulans[i]->col() == c)) {
-      /* cout << r << "\t" << c << endl; */
       ret++;
     }
   }
@@ -419,11 +417,10 @@ void City::preachToFlatulansAroundPlayer() {
   for (int i = 0; i < m_nFlatulans; i++) {
     if ((abs(m_flatulans[i]->row() - m_player->row()) <= 1) &&
         (abs(m_flatulans[i]->col() - m_player->col()) <= 1)) {
-      /* if (m_flatulans[i]->possiblyGetConverted()) { */
-      cout << m_flatulans[i]->row() << "\t" << m_flatulans[i]->col() << endl;
-      delete m_flatulans[i];
-      m_flatulans[i] = nullptr;
-      /* } */
+      if (m_flatulans[i]->possiblyGetConverted()) {
+        delete m_flatulans[i];
+        m_flatulans[i] = nullptr;
+      }
     }
   }
 
@@ -445,10 +442,10 @@ void City::moveFlatulans() {
     m_flatulans[k]->move();
     if ((abs(m_flatulans[k]->row() - m_player->row()) == 1) &&
         (m_flatulans[k]->col() == m_player->col())) {
-        m_player->getGassed();
+      m_player->getGassed();
     } else if ((abs(m_flatulans[k]->col() - m_player->col()) == 1) &&
-              (m_flatulans[k]->row() == m_player->row())) {
-        m_player->getGassed();
+               (m_flatulans[k]->row() == m_player->row())) {
+      m_player->getGassed();
     }
   }
 }
@@ -564,14 +561,165 @@ int randInt(int min, int max) {
   return distro(generator);
 }
 
+#include <cassert>
+#include <type_traits>
+
+#define CHECKTYPE(c, f, r, a)                                                  \
+  static_assert(std::is_same<decltype(&c::f), r(c::*) a>::value,               \
+                "FAILED: You changed the type of " #c "::" #f);                \
+  [[gnu::unused]] auto xxx##c##_##f = static_cast<r(c::*) a>(&c::f)
+
+void thisFunctionWillNeverBeCalled() {
+  // If the student deleted or changed the interfaces to the public
+  // functions, this won't compile.  (This uses magic beyond the scope
+  // of CS 31.)
+
+  Flatulan(static_cast<City *>(0), 1, 1);
+  CHECKTYPE(Flatulan, row, int, () const);
+  CHECKTYPE(Flatulan, col, int, () const);
+  CHECKTYPE(Flatulan, move, void, ());
+  CHECKTYPE(Flatulan, possiblyGetConverted, bool, ());
+
+  Player(static_cast<City *>(0), 1, 1);
+  CHECKTYPE(Player, row, int, () const);
+  CHECKTYPE(Player, col, int, () const);
+  CHECKTYPE(Player, age, int, () const);
+  CHECKTYPE(Player, health, int, () const);
+  CHECKTYPE(Player, isPassedOut, bool, () const);
+  CHECKTYPE(Player, preach, void, ());
+  CHECKTYPE(Player, move, void, (int));
+  CHECKTYPE(Player, getGassed, void, ());
+
+  City(1, 1);
+  CHECKTYPE(City, rows, int, () const);
+  CHECKTYPE(City, cols, int, () const);
+  CHECKTYPE(City, player, Player *, () const);
+  CHECKTYPE(City, isPlayerAt, bool, (int, int) const);
+  CHECKTYPE(City, flatulanCount, int, () const);
+  CHECKTYPE(City, nFlatulansAt, int, (int, int) const);
+  CHECKTYPE(City, determineNewPosition, bool, (int &, int &, int) const);
+  CHECKTYPE(City, display, void, () const);
+  CHECKTYPE(City, addFlatulan, bool, (int, int));
+  CHECKTYPE(City, addPlayer, bool, (int, int));
+  CHECKTYPE(City, preachToFlatulansAroundPlayer, void, ());
+  CHECKTYPE(City, moveFlatulans, void, ());
+
+  Game(1, 1, 1);
+  CHECKTYPE(Game, play, void, ());
+}
+
+void doBasicTests() {
+  {
+    City walk(10, 20);
+    assert(walk.addPlayer(2, 6));
+    Player *pp = walk.player();
+    assert(walk.isPlayerAt(2, 6) && !pp->isPassedOut());
+    pp->move(UP);
+    assert(walk.isPlayerAt(1, 6) && !pp->isPassedOut());
+    pp->move(UP);
+    assert(walk.isPlayerAt(1, 6) && !pp->isPassedOut());
+    for (int k = 1; k <= 11; k++)
+      pp->getGassed();
+    assert(!pp->isPassedOut());
+    pp->getGassed();
+    assert(pp->isPassedOut());
+  }
+  {
+    City ofAngels(2, 2);
+    assert(ofAngels.addPlayer(1, 1));
+    assert(ofAngels.addFlatulan(2, 2));
+    Player *pp = ofAngels.player();
+    ofAngels.moveFlatulans();
+    assert(!pp->isPassedOut());
+    for (int k = 0; k < 1000 && !pp->isPassedOut(); k++)
+      ofAngels.moveFlatulans();
+    assert(pp->isPassedOut());
+  }
+  {
+    City ousDarth(2, 2);
+    assert(ousDarth.addPlayer(1, 1));
+    for (int k = 0; k < 50; k++) {
+      assert(ousDarth.addFlatulan(1, 2));
+      assert(ousDarth.addFlatulan(2, 2));
+    }
+    ousDarth.preachToFlatulansAroundPlayer();
+    assert(ousDarth.nFlatulansAt(1, 1) == 0);
+    assert(ousDarth.nFlatulansAt(2, 1) == 0);
+    for (int r = 1; r <= 2; r++) { // .9999 probability that between 5 and 29
+                                   // out of 50 are unconverted
+      int n = ousDarth.nFlatulansAt(r, 2);
+      assert(n >= 5 && n <= 29);
+    }
+    int m = ousDarth.nFlatulansAt(1, 2);
+    ousDarth.addFlatulan(1, 2);
+    assert(ousDarth.nFlatulansAt(1, 2) == m + 1);
+  }
+  {
+    City univer(5, 20);
+    univer.addPlayer(3, 3);
+    int r = 1;
+    int c = 1;
+    for (int k = 1; k <= 5 * 5; k++) {
+      if (r != 3 || c != 3)
+        univer.addFlatulan(r, c);
+      if (r == 5) {
+        r = c + 1;
+        c = 5;
+      } else if (c == 1) {
+        c = r + 1;
+        r = 1;
+      } else {
+        c--;
+        r++;
+      }
+    }
+    assert(univer.flatulanCount() == 24);
+    for (int k = 0; k < 1000 && univer.flatulanCount() > 16; k++)
+      univer.preachToFlatulansAroundPlayer();
+    assert(univer.flatulanCount() == 16);
+    for (int r = 1; r <= 5; r++) {
+      for (int c = 1; c <= 5; c++) {
+        int expected = 1;
+        if (r >= 2 && r <= 4 && c >= 2 && c <= 4)
+          expected = 0;
+        assert(univer.nFlatulansAt(r, c) == expected);
+      }
+    }
+    univer.addFlatulan(3, 2);
+    assert(univer.flatulanCount() == 17);
+    // If the program crashes after leaving this compound statement, you
+    // are probably messing something up when you delete a Flatulan after
+    // it is converted (or you have mis-coded the destructor).
+    //
+    // Draw a picture of your m_flatulans array before the Flatulans are
+    // preached to and also note the values of m_nFlatulans or any other
+    // variables you might have that are involved with the number of
+    // Flatulans.  Trace through your code step by step as the Flatulans
+    // are preached to and removed, updating the picture according to
+    // what the code says, not what you want it to do.  If you don't see
+    // a problem then, try tracing through the destruction of the city.
+    //
+    // If you execute the code, use the debugger to check on the values
+    // of key variables at various points.  If you didn't try to learn
+    // to use the debugger, insert statements that write the values of
+    // key variables to cerr so you can trace the execution of your code
+    // and see the first place where something has gone amiss.  (Comment
+    // out the call to clearScreen in City::display so that your output
+    // doesn't disappear.)
+  }
+  cout << "Passed all basic tests" << endl;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 //  main()
 ///////////////////////////////////////////////////////////////////////////
 
 int main() {
+  /* doBasicTests(); */
+  /* return 0; */
   // Create a game
   // Use this instead to create a mini-game:   Game g(3, 4, 2);
-  Game g(3, 4, 2);
+  Game g(7, 8, 25);
 
   // Play the game
   g.play();
