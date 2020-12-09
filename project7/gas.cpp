@@ -217,8 +217,8 @@ void Player::move(int dir) {
   m_age++;
   int r = m_row;
   int c = m_col;
-  m_city->determineNewPosition(r, c, dir);
-  if (m_city->nFlatulansAt(r, c) == 0) {
+  m_city->determineNewPosition(r, c, dir); // Cap movement from city size
+  if (m_city->nFlatulansAt(r, c) == 0) {   // Only move if no flatulans
     m_row = r;
     m_col = c;
   }
@@ -383,12 +383,12 @@ bool City::addFlatulan(int r, int c) {
   // in this scenario (which won't occur in this game):  MAXFLATULANS
   // Flatulans are added, then some are converted, then more are added.
 
-  if (m_nFlatulans + 1 < MAXFLATULANS) {
+  if (m_nFlatulans + 1 < MAXFLATULANS) { // Add if doesnt overflow array
     m_flatulans[m_nFlatulans] = new Flatulan(this, r, c);
-    m_nFlatulans++;
+    m_nFlatulans++; // increment total count accordingly
     return true;
   }
-  return false; // This implementation compiles, but is incorrect.
+  return false;
 }
 
 bool City::addPlayer(int r, int c) {
@@ -418,12 +418,14 @@ void City::preachToFlatulansAroundPlayer() {
     if ((abs(m_flatulans[i]->row() - m_player->row()) <= 1) &&
         (abs(m_flatulans[i]->col() - m_player->col()) <= 1)) {
       if (m_flatulans[i]->possiblyGetConverted()) {
+        // If the flatulan is getting converted, delete it
         delete m_flatulans[i];
         m_flatulans[i] = nullptr;
       }
     }
   }
 
+  // Push nulls to the end of the array
   int j = 0;
   for (int i = 0; i < m_nFlatulans; i++) {
     if (m_flatulans[i] != nullptr) {
@@ -434,12 +436,14 @@ void City::preachToFlatulansAroundPlayer() {
     }
   }
 
+  // Update count of flatulans to prevent null access
   m_nFlatulans = j;
 }
 
 void City::moveFlatulans() {
   for (int k = 0; k < m_nFlatulans; k++) {
     m_flatulans[k]->move();
+    // Gas if adjacent orthogonally
     if ((abs(m_flatulans[k]->row() - m_player->row()) == 1) &&
         (m_flatulans[k]->col() == m_player->col())) {
       m_player->getGassed();
